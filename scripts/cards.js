@@ -42,8 +42,12 @@ function createCard({ name, link }) {
   const card = getTemplateCard.cloneNode(true);
   card.querySelector(".card__title").textContent = name
   card.querySelector(".card__image").src = link
+card.querySelector(".card__delete-button").addEventListener('click', removeCard)
+  
 
   placesList.insertAdjacentElement('beforeend', card)
 }
 
-
+function removeCard(event){
+  event.target.closest(".card").remove()
+}
