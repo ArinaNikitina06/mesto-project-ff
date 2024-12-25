@@ -9,8 +9,11 @@
 // @todo: Вывести карточки на страницу
 const placesList = document.querySelector(".places__list");
 
-function createCards(initialCards) {
-  initialCards.forEach((element) => createCard(element));
+function createCards(initialCards) { 
+  initialCards.forEach((element) => {
+    const cardElement = createCard(element);
+    placesList.append(cardElement);
+  });
 }
 
 createCards(initialCards);
@@ -26,8 +29,7 @@ function createCard({ name, link }) {
   card
     .querySelector(".card__delete-button")
     .addEventListener("click", removeCard);
-
-  placesList.insertAdjacentElement("beforeend", card);
+return card
 }
 
 function removeCard(event) {
