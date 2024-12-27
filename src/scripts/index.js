@@ -7,9 +7,24 @@
 // @todo: Функция удаления карточки
 
 // @todo: Вывести карточки на страницу
-const placesList = document.querySelector(".places__list");
 
-function createCards(initialCards) { 
+import initialCards from "./cards.js";
+import "../pages/index.css";
+
+const placesList = document.querySelector(".places__list");
+const popupProfileOpenButton = document.querySelector(".profile__edit-button");
+const popupProfileEdit = document.querySelector(".popup");
+const popupProfileEditCloseBtn = popupProfileEdit.querySelector('.popup__close');
+
+popupProfileOpenButton.addEventListener('click', () => {
+popupProfileEdit.classList.add("popup_is-opened");
+})
+
+popupProfileEditCloseBtn.addEventListener("click", () => {
+  popupProfileEdit.classList.remove("popup_is-opened");
+});
+
+function createCards(initialCards) {
   initialCards.forEach((element) => {
     const cardElement = createCard(element);
     placesList.append(cardElement);
@@ -29,9 +44,10 @@ function createCard({ name, link }) {
   card
     .querySelector(".card__delete-button")
     .addEventListener("click", removeCard);
-return card
+  return card;
 }
 
 function removeCard(event) {
   event.target.closest(".card").remove();
 }
+
