@@ -22,6 +22,17 @@ const popupImage = document.querySelector(".popup_type_image");
 const popupList = document.querySelectorAll(".popup");
 // const popupProfileEditCloseBtn = popupProfileEdit.querySelector('.popup__close');
 
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+const popupEditProfileTitleInput = popupEdit.querySelector(
+  ".popup__input_type_name"
+);
+const popupEditProfileDescriptionInput = popupEdit.querySelector(
+  ".popup__input_type_description"
+);
+const popupEditForm = popupEdit.querySelector('[name="edit-profile"]');
+const popupNewPlaceForm = popupNewPlace.querySelector('[name="new-place"]');
+
 function openPopUp(popup) {
   document.addEventListener('keyup', closePopupByEsc)
   popup.classList.add("popup_is-opened");
@@ -33,12 +44,20 @@ function closePopUp(popup) {
 }
 
 popupProfileOpenButton.addEventListener("click", () => {
+  popupEditProfileTitleInput.value = profileTitle.textContent
+  popupEditProfileDescriptionInput.value = profileDescription.textContent
   openPopUp(popupEdit);
 });
 
 popupPlaceOpenButton.addEventListener("click", () => {
   openPopUp(popupNewPlace);
 });
+
+popupEditForm.addEventListener('submit', (e) => {
+e.preventDefault();
+
+})
+
 
 
 popupList.forEach(popup => {
