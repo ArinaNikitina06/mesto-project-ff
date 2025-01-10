@@ -10,6 +10,12 @@
 
 import initialCards from "./cards.js";
 import "../pages/index.css";
+import {
+  createCard,
+  removeCardHandler,
+  likeHandler,
+} from "../components/card.js";
+import { openPopUp, closePopUp, closePopupByEsc } from "../components/model.js";
 
 const placesList = document.querySelector(".places__list");
 const popupProfileOpenButton = document.querySelector(".profile__edit-button");
@@ -20,7 +26,6 @@ const popupNewPlace = document.querySelector(".popup_type_new-card");
 const popupImage = document.querySelector(".popup_type_image");
 
 const popupList = document.querySelectorAll(".popup");
-// const popupProfileEditCloseBtn = popupProfileEdit.querySelector('.popup__close');
 
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
@@ -43,17 +48,6 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
 
-function openPopUp(popup) {
-  document.addEventListener("keyup", closePopupByEsc);
-  popup.classList.add("popup_is-opened");
-  popup.classList.remove("popup_is-animated");
-}
-
-function closePopUp(popup) {
-  document.removeEventListener("keyup", closePopupByEsc);
-  popup.classList.remove("popup_is-opened");
-    popup.classList.add("popup_is-animated");
-}
 
 popupProfileOpenButton.addEventListener("click", () => {
   popupEditProfileTitleInput.value = profileTitle.textContent;
@@ -83,6 +77,7 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
   e.target.reset();
 });
 
+
 popupList.forEach((popup) => {
   popup.addEventListener("click", (e) => {
     if (e.target.closest(".popup__close")) {
@@ -95,16 +90,6 @@ popupList.forEach((popup) => {
   });
 });
 
-function closePopupByEsc(e) {
-  if (e.key === "Escape") {
-    const currentOpenPopup = document.querySelector(".popup_is-opened");
-    closePopUp(currentOpenPopup);
-  }
-}
-
-// popupProfileEditCloseBtn.addEventListener("click", () => {
-//   closePopUp(popup)
-// });
 
 function createCards(initialCards) {
   initialCards.forEach((element) => {
@@ -120,26 +105,6 @@ function createCards(initialCards) {
 
 createCards(initialCards);
 
-function createCard({ name, link }, likeHandler, removeCardHandler, openCardHandler) {
-  const getTemplateCard = document
-    .querySelector("#card-template")
-    .content.querySelector(".card");
-
-  const card = getTemplateCard.cloneNode(true);
-  const cardTitle = card.querySelector(".card__title");
-  cardTitle.textContent = name;
-  const cardImg = card.querySelector(".card__image");
-  cardImg.src = link;
-  card
-    .querySelector(".card__delete-button")
-    .addEventListener("click", removeCardHandler);
-  card
-    .querySelector(".card__like-button")
-    .addEventListener("click", likeHandler);
-  cardImg.addEventListener("click", () => openCardHandler(cardImg.src, cardTitle.textContent));
-  return card;
-}
-
 function openCardHandler(src, title) {
   popupOpenImageUrl.src = src;
   popupOpenImageUrl.alt = title;
@@ -147,10 +112,4 @@ function openCardHandler(src, title) {
   openPopUp(popupImage);
 }
 
-function removeCardHandler(event) {
-  event.target.closest(".card").remove();
-}
 
-function likeHandler(event) {
-  event.target.classList.toggle("card__like-button_is-active");
-}
