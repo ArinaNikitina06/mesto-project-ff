@@ -55,7 +55,9 @@ popupPlaceOpenButton.addEventListener("click", () => {
 
 popupEditForm.addEventListener('submit', (e) => {
 e.preventDefault();
-
+profileTitle.textContent = popupEditProfileTitleInput.value;
+profileDescription.textContent = popupEditProfileDescriptionInput.value;
+closePopUp(popupEdit);
 })
 
 
