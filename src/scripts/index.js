@@ -12,7 +12,7 @@ import initialCards from "./cards.js";
 import "../pages/index.css";
 
 const placesList = document.querySelector(".places__list");
-const popupProfileOpenButton = document.querySelector(".profile__edit-button")
+const popupProfileOpenButton = document.querySelector(".profile__edit-button");
 const popupPlaceOpenButton = document.querySelector(".profile__add-button");
 
 const popupEdit = document.querySelector(".popup_type_edit");
@@ -33,19 +33,26 @@ const popupEditProfileDescriptionInput = popupEdit.querySelector(
 const popupEditForm = popupEdit.querySelector('[name="edit-profile"]');
 const popupNewPlaceForm = popupNewPlace.querySelector('[name="new-place"]');
 
+const popupCreateNewCardTitleInput = document.querySelector(
+  ".popup__input_type_card-name"
+);
+const popupCreateNewCardDescriptionInput = document.querySelector(
+  ".popup__input_type_url"
+);
+
 function openPopUp(popup) {
-  document.addEventListener('keyup', closePopupByEsc)
+  document.addEventListener("keyup", closePopupByEsc);
   popup.classList.add("popup_is-opened");
 }
 
 function closePopUp(popup) {
-  document.removeEventListener('keyup', closePopupByEsc)
+  document.removeEventListener("keyup", closePopupByEsc);
   popup.classList.remove("popup_is-opened");
 }
 
 popupProfileOpenButton.addEventListener("click", () => {
-  popupEditProfileTitleInput.value = profileTitle.textContent
-  popupEditProfileDescriptionInput.value = profileDescription.textContent
+  popupEditProfileTitleInput.value = profileTitle.textContent;
+  popupEditProfileDescriptionInput.value = profileDescription.textContent;
   openPopUp(popupEdit);
 });
 
@@ -53,34 +60,42 @@ popupPlaceOpenButton.addEventListener("click", () => {
   openPopUp(popupNewPlace);
 });
 
-popupEditForm.addEventListener('submit', (e) => {
-e.preventDefault();
-profileTitle.textContent = popupEditProfileTitleInput.value;
-profileDescription.textContent = popupEditProfileDescriptionInput.value;
-closePopUp(popupEdit);
-})
-
-
-
-popupList.forEach(popup => {
-  popup.addEventListener("click", (e) => {
-  if (e.target.closest(".popup__close")) {
-    closePopUp(popup);
-  }
-
-  if (e.target === e.currentTarget) {
-    closePopUp(popup);
-  }
+popupEditForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  profileTitle.textContent = popupEditProfileTitleInput.value;
+  profileDescription.textContent = popupEditProfileDescriptionInput.value;
+  closePopUp(popupEdit);
+  e.target.reset()
 });
-}); 
 
-function closePopupByEsc(e){
-    if (e.key === 'Escape') {
-      const currentOpenPopup = document.querySelector('.popup_is-opened')
-          closePopUp(currentOpenPopup);
+popupNewPlaceForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = popupCreateNewCardTitleInput.value;
+  const link = popupCreateNewCardDescriptionInput.value;
+  const cardElement = createCard({ name, link });
+  placesList.prepend(cardElement);
+   closePopUp(popupNewPlace);
+   e.target.reset()
+});
+
+popupList.forEach((popup) => {
+  popup.addEventListener("click", (e) => {
+    if (e.target.closest(".popup__close")) {
+      closePopUp(popup);
     }
-}
 
+    if (e.target === e.currentTarget) {
+      closePopUp(popup);
+    }
+  });
+});
+
+function closePopupByEsc(e) {
+  if (e.key === "Escape") {
+    const currentOpenPopup = document.querySelector(".popup_is-opened");
+    closePopUp(currentOpenPopup);
+  }
+}
 
 // popupProfileEditCloseBtn.addEventListener("click", () => {
 //   closePopUp(popup)
