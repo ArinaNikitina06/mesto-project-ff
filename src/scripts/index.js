@@ -71,7 +71,9 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const name = popupCreateNewCardTitleInput.value;
   const link = popupCreateNewCardDescriptionInput.value;
-  const cardElement = createCard({ name, link });
+  const cardElement = createCard({ name, link }, likeHandler,
+  removeCardHandler,
+  openCardHandler);
   placesList.prepend(cardElement);
   closePopUp(popupNewPlace);
   e.target.reset();
