@@ -40,6 +40,9 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
   ".popup__input_type_url"
 );
 
+const popupOpenImageUrl = document.querySelector(".popup__image");
+const popupOpenImageDescription = document.querySelector(".popup__caption");
+
 function openPopUp(popup) {
   document.addEventListener("keyup", closePopupByEsc);
   popup.classList.add("popup_is-opened");
@@ -116,12 +119,25 @@ function createCard({ name, link }) {
     .content.querySelector(".card");
 
   const card = getTemplateCard.cloneNode(true);
-  card.querySelector(".card__title").textContent = name;
-  card.querySelector(".card__image").src = link;
+  const cardTitle = card.querySelector(".card__title")
+  cardTitle.textContent = name;
+  const cardImg = card.querySelector(".card__image")
+  cardImg.src = link;
   card
     .querySelector(".card__delete-button")
     .addEventListener("click", removeCard);
+    
+  cardImg.addEventListener('click',() => {
+  openCard(cardImg.src, cardTitle.textContent);
+  openPopUp(popupImage);
+  })
   return card;
+}
+
+function openCard(src, title){
+popupOpenImageUrl.src = src;
+popupOpenImageUrl.alt = title;
+popupOpenImageDescription.textContent = title;
 }
 
 function removeCard(event) {
