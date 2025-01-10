@@ -106,14 +106,19 @@ function closePopupByEsc(e) {
 
 function createCards(initialCards) {
   initialCards.forEach((element) => {
-    const cardElement = createCard(element, likeHandler, removeCardHandler);
+    const cardElement = createCard(
+      element,
+      likeHandler,
+      removeCardHandler,
+      openCardHandler
+    );
     placesList.append(cardElement);
   });
 }
 
 createCards(initialCards);
 
-function createCard({ name, link }, likeHandler, removeCardHandler) {
+function createCard({ name, link }, likeHandler, removeCardHandler, openCardHandler) {
   const getTemplateCard = document
     .querySelector("#card-template")
     .content.querySelector(".card");
@@ -129,17 +134,15 @@ function createCard({ name, link }, likeHandler, removeCardHandler) {
   card
     .querySelector(".card__like-button")
     .addEventListener("click", likeHandler);
-  cardImg.addEventListener("click", () => {
-    openCard(cardImg.src, cardTitle.textContent);
-    openPopUp(popupImage);
-  });
+  cardImg.addEventListener("click", () => openCardHandler(cardImg.src, cardTitle.textContent));
   return card;
 }
 
-function openCard(src, title) {
+function openCardHandler(src, title) {
   popupOpenImageUrl.src = src;
   popupOpenImageUrl.alt = title;
   popupOpenImageDescription.textContent = title;
+  openPopUp(popupImage);
 }
 
 function removeCardHandler(event) {
