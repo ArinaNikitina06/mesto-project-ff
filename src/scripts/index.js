@@ -46,11 +46,13 @@ const popupOpenImageDescription = document.querySelector(".popup__caption");
 function openPopUp(popup) {
   document.addEventListener("keyup", closePopupByEsc);
   popup.classList.add("popup_is-opened");
+  popup.classList.remove("popup_is-animated");
 }
 
 function closePopUp(popup) {
   document.removeEventListener("keyup", closePopupByEsc);
   popup.classList.remove("popup_is-opened");
+    popup.classList.add("popup_is-animated");
 }
 
 popupProfileOpenButton.addEventListener("click", () => {
