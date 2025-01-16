@@ -15,7 +15,7 @@ import {
   removeCardHandler,
   likeHandler,
 } from "../components/card.js";
-import { openPopUp, closePopUp, closePopupByEsc } from "../components/model.js";
+import { openPopUp, closePopUp, closePopupByEsc } from "../components/modal.js";
 
 const placesList = document.querySelector(".places__list");
 const popupProfileOpenButton = document.querySelector(".profile__edit-button");
