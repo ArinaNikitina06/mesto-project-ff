@@ -48,10 +48,154 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
 
+/* 
+
+1. нужен механизм который захочет принять ссылку на какую то форму
+2. в идеале правила правила валидации (объект) 
+
+надо выделить функции:
+- функция очистки всех ошибок
+- функция блокирует кнопку
+- функция разблокирует кнопку
+- функция добавления ошибки
+
+*/
+
+// config
+const configPopupEditForm = {
+  selectors: {
+    input: ".popup__input",
+    spanError: ".popup__input-error",
+    button: ".popup__button",
+  },
+  inputsRule: {
+    name: {
+      isRequired: true,
+      between: {
+        min: 2,
+        max: 40,
+      },
+      errorMessages: {
+        isRequired: "поле обязательно для заполнения",
+        between: "В поле «Имя» должно быть от 2 до 40 символов",
+      },
+    },
+    description: {
+      isRequired: true,
+      between: {
+        min: 2,
+        max: 400,
+      },
+      errorMessages: {
+        isRequired: "поле обязательно для заполнения",
+        between: "В поле «Описание» должно быть от 2 до 400 символов",
+      },
+    },
+  },
+  buttonRule: {
+    disabled: true,
+  },
+};
+
+function validateForm(form, config) {
+  const inputsList = form.querySelectorAll(config.selectors.input);
+  const currentBtn = form.querySelector(config.selectors.button);
+  const spansList = form.querySelectorAll(config.selectors.spanError);
+
+  inputsList.forEach((currentInput) => {
+    const currentSpan = form.querySelector(
+      `[data-name="form-input-error-${currentInput.name}"]`
+    );
+
+    currentInput.addEventListener("input", (e) => {
+      const rulesCurrentInput = config.inputsRule[currentInput.name
+        
+      ];
+
+      // error between
+      if (
+        currentInput.value.trim().length < rulesCurrentInput.between.min ||
+        currentInput.value.trim().length > rulesCurrentInput.between.max
+      ) {
+        currentInput.classList.add("popup__input_type-error");
+        currentSpan.classList.add("popup__input-error_active");
+        currentSpan.textContent = rulesCurrentInput.errorMessages.between;
+        currentBtn.setAttribute("disabled", "disabled");
+      }
+      
+      // error isRequired
+      if (rulesCurrentInput.isRequired === true && currentInput.value.trim().length === 0) {
+        currentInput.classList.add("popup__input_type-error");
+        currentSpan.classList.add("popup__input-error_active");
+        currentSpan.textContent = rulesCurrentInput.errorMessages.isRequired
+        currentBtn.setAttribute("disabled", "disabled");
+      }
+
+      // success, clean error
+      if (
+         currentInput.value.trim().length > rulesCurrentInput.between.min &&
+         currentInput.value.trim().length < rulesCurrentInput.between.max
+       ) {
+         currentInput.classList.remove("popup__input_type-error");
+         currentSpan.classList.remove("popup__input-error_active");
+         currentSpan.textContent = '';
+         currentBtn.removeAttribute("disabled");
+       }
+    });
+  });
+
+  function cleanAllErrors() {
+    inputsList.forEach((currentInput) => {
+      currentInput.classList.remove("popup__input_type-error");
+    });
+
+ spansList.forEach((currentSpan) => {
+   currentSpan.classList.remove("popup__input-error_active");
+});
+   currentBtn.removeAttribute("disabled");
+  } 
+
+  return cleanAllErrors
+}
+
+const cleanAllErrors = validateForm(popupEditForm, configPopupEditForm);
+
+
+// popupEditProfileTitleInput.addEventListener('input', (e) => {
+// const currentInput = e.target;
+// const currentSpan = popupEditForm.querySelector(`[data-name="form-input-error-name"]`)
+// const currentBtn = popupEditForm.querySelector(".popup__button");
+
+// if(currentInput.value.length < 2 || currentInput.value.length > 40 ) {
+//   currentInput.classList.add('popup__input_type-error')
+//   currentSpan.classList.add('popup__input-error_active')
+//   currentSpan.textContent = "В поле «Имя» должно быть от 2 до 40 символов.";
+//   currentBtn.setAttribute('disabled','disabled')
+// }
+
+// if (currentInput.value.length === 0) {
+//   currentInput.classList.add("popup__input_type-error");
+//   currentSpan.classList.add("popup__input-error_active");
+//   currentSpan.textContent = "Поле обязательное";
+//   currentBtn.setAttribute("disabled", "disabled");
+// }
+
+// if (currentInput.value.length > 2 && currentInput.value.length < 40) {
+//   currentInput.classList.remove("popup__input_type-error");
+//   currentSpan.classList.remove("popup__input-error_active");
+//   currentSpan.textContent = ""
+//   currentBtn.removeAttribute("disabled");
+// }
+
+// // const result = currentInput.value.match(/[^a-zа-яё ]/iu);
+// // console.log(result);
+
+// })
 
 popupProfileOpenButton.addEventListener("click", () => {
   popupEditProfileTitleInput.value = profileTitle.textContent;
   popupEditProfileDescriptionInput.value = profileDescription.textContent;
+  cleanAllErrors()
   openPopUp(popupEdit);
 });
 
@@ -71,14 +215,16 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const name = popupCreateNewCardTitleInput.value;
   const link = popupCreateNewCardDescriptionInput.value;
-  const cardElement = createCard({ name, link }, likeHandler,
-  removeCardHandler,
-  openCardHandler);
+  const cardElement = createCard(
+    { name, link },
+    likeHandler,
+    removeCardHandler,
+    openCardHandler
+  );
   placesList.prepend(cardElement);
   closePopUp(popupNewPlace);
   e.target.reset();
 });
-
 
 popupList.forEach((popup) => {
   popup.addEventListener("click", (e) => {
@@ -91,7 +237,6 @@ popupList.forEach((popup) => {
     }
   });
 });
-
 
 function createCards(initialCards) {
   initialCards.forEach((element) => {
@@ -113,5 +258,3 @@ function openCardHandler(src, title) {
   popupOpenImageDescription.textContent = title;
   openPopUp(popupImage);
 }
-
-
