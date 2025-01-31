@@ -7,6 +7,8 @@
 // @todo: Функция удаления карточки
 
 // @todo: Вывести карточки на страницу
+// 2e6ea80b-30a6-4c71-bab6-c324b53f8521
+// cohort-mag-4
 
 import initialCards from "./cards.js";
 import "../pages/index.css";
@@ -114,7 +116,6 @@ function createCards(initialCards) {
   });
 }
 
-createCards(initialCards);
 
 function openCardHandler(src, title) {
   popupOpenImageUrl.src = src;
@@ -122,3 +123,22 @@ function openCardHandler(src, title) {
   popupOpenImageDescription.textContent = title;
   openPopUp(popupImage);
 }
+
+function getCards({url, token}) {
+  return fetch(url, {
+    headers: {
+      authorization: token,
+    },
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      return result
+    });
+}
+
+const cardsPromise = getCards({
+  url: "https://nomoreparties.co/v1/cohort-mag-4/cards",
+  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521"
+})
+
+cardsPromise.then(initialCards => createCards(initialCards))
