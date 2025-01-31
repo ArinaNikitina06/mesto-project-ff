@@ -32,6 +32,7 @@ const popupList = document.querySelectorAll(".popup");
 
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
+const profileAvatar = document.querySelector(".profile__image");
 const popupEditProfileTitleInput = popupEdit.querySelector(
   ".popup__input_type_name"
 );
@@ -50,6 +51,7 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
+
 
 enableValidation(popupEditForm, configPopupEditForm);
 enableValidation(
@@ -104,6 +106,13 @@ popupList.forEach((popup) => {
   });
 });
 
+function renderProfile({ name, about, avatar}) {
+  console.log(avatar);
+  profileTitle.textContent = name
+  profileDescription.textContent = about
+  profileAvatar.style.backgroundImage = `url(${avatar})`
+}
+
 function createCards(initialCards) {
   initialCards.forEach((element) => {
     const cardElement = createCard(
@@ -142,3 +151,21 @@ const cardsPromise = getCards({
 })
 
 cardsPromise.then(initialCards => createCards(initialCards))
+
+function getUserData({url, token}){
+  return fetch(url, {
+    headers: {
+      authorization: token,
+    },
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      return result
+    }); 
+}
+
+const userDataPromise = getUserData({
+  url: "https://nomoreparties.co/v1/cohort-mag-4//users/me",
+  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521"
+})
+userDataPromise.then((userData) => renderProfile(userData));
