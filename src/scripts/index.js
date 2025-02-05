@@ -77,6 +77,16 @@ popupEditForm.addEventListener("submit", (e) => {
   profileTitle.textContent = popupEditProfileTitleInput.value;
   profileDescription.textContent = popupEditProfileDescriptionInput.value;
   closePopUp(popupEdit);
+  updateUserData(
+    {
+      url: "https://nomoreparties.co/v1/cohort-mag-4/users/me",
+      token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+    },
+    {
+      name: popupEditProfileTitleInput.value,
+      about: popupEditProfileDescriptionInput.value,
+    }
+  );
   e.target.reset();
 });
 
@@ -133,6 +143,21 @@ function openCardHandler(src, title) {
   openPopUp(popupImage);
 }
 
+function updateUserData({ url, token }, payload) {
+  return fetch(url, {
+    method: "PATCH",
+    headers: {
+      authorization: token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      console.log(result);
+    });
+}
+
 function getCards({ url, token }) {
   return fetch(url, {
     headers: {
@@ -170,6 +195,6 @@ const userDataPromise = getUserData({
 // init app
 Promise.all([cardsPromise, userDataPromise]).then((data) => {
   const [initialCards, userData] = data;
-createCards(initialCards);
-renderProfile(userData);
-})
+  createCards(initialCards);
+  renderProfile(userData);
+});
