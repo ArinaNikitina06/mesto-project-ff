@@ -18,7 +18,12 @@ import {
   likeHandler,
 } from "../components/card.js";
 import { openPopUp, closePopUp, closePopupByEsc } from "../components/modal.js";
-import {configPopupEditForm, configPopupCreateNewPlaceForm, enableValidation, clearValidation} from './validation.js'
+import {
+  configPopupEditForm,
+  configPopupCreateNewPlaceForm,
+  enableValidation,
+  clearValidation,
+} from "./validation.js";
 
 const placesList = document.querySelector(".places__list");
 const popupProfileOpenButton = document.querySelector(".profile__edit-button");
@@ -52,12 +57,8 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
 
-
 enableValidation(popupEditForm, configPopupEditForm);
-enableValidation(
-  popupNewPlaceForm,
-  configPopupCreateNewPlaceForm
-);
+enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
 
 popupProfileOpenButton.addEventListener("click", () => {
   popupEditProfileTitleInput.value = profileTitle.textContent;
@@ -106,11 +107,11 @@ popupList.forEach((popup) => {
   });
 });
 
-function renderProfile({ name, about, avatar}) {
+function renderProfile({ name, about, avatar }) {
   console.log(avatar);
-  profileTitle.textContent = name
-  profileDescription.textContent = about
-  profileAvatar.style.backgroundImage = `url(${avatar})`
+  profileTitle.textContent = name;
+  profileDescription.textContent = about;
+  profileAvatar.style.backgroundImage = `url(${avatar})`;
 }
 
 function createCards(initialCards) {
@@ -125,7 +126,6 @@ function createCards(initialCards) {
   });
 }
 
-
 function openCardHandler(src, title) {
   popupOpenImageUrl.src = src;
   popupOpenImageUrl.alt = title;
@@ -133,7 +133,7 @@ function openCardHandler(src, title) {
   openPopUp(popupImage);
 }
 
-function getCards({url, token}) {
+function getCards({ url, token }) {
   return fetch(url, {
     headers: {
       authorization: token,
@@ -141,18 +141,16 @@ function getCards({url, token}) {
   })
     .then((res) => res.json())
     .then((result) => {
-      return result
+      return result;
     });
 }
 
 const cardsPromise = getCards({
   url: "https://nomoreparties.co/v1/cohort-mag-4/cards",
-  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521"
-})
+  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+});
 
-cardsPromise.then(initialCards => createCards(initialCards))
-
-function getUserData({url, token}){
+function getUserData({ url, token }) {
   return fetch(url, {
     headers: {
       authorization: token,
@@ -160,12 +158,18 @@ function getUserData({url, token}){
   })
     .then((res) => res.json())
     .then((result) => {
-      return result
-    }); 
+      return result;
+    });
 }
 
 const userDataPromise = getUserData({
   url: "https://nomoreparties.co/v1/cohort-mag-4//users/me",
-  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521"
+  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+});
+
+// init app
+Promise.all([cardsPromise, userDataPromise]).then((data) => {
+  const [initialCards, userData] = data;
+createCards(initialCards);
+renderProfile(userData);
 })
-userDataPromise.then((userData) => renderProfile(userData));
