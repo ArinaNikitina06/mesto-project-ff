@@ -77,16 +77,13 @@ popupEditForm.addEventListener("submit", (e) => {
   profileTitle.textContent = popupEditProfileTitleInput.value;
   profileDescription.textContent = popupEditProfileDescriptionInput.value;
   closePopUp(popupEdit);
-  updateUserData(
-    {
-      url: "https://nomoreparties.co/v1/cohort-mag-4/users/me",
-      token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
-    },
-    {
-      name: popupEditProfileTitleInput.value,
-      about: popupEditProfileDescriptionInput.value,
-    }
-  );
+  updateUserData({
+  url: "https://nomoreparties.co/v1/cohort-mag-4/users/me",
+  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+}, {
+    name: popupEditProfileTitleInput.value,
+    about: popupEditProfileDescriptionInput.value,
+  });
   e.target.reset();
 });
 
@@ -102,6 +99,13 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
   );
   placesList.prepend(cardElement);
   closePopUp(popupNewPlace);
+  updateUserPlace({
+  url: "https://nomoreparties.co/v1/cohort-mag-4/cards",
+  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+}, {name: name,
+    link: link
+  })
+  
   e.target.reset();
 });
 
@@ -118,7 +122,6 @@ popupList.forEach((popup) => {
 });
 
 function renderProfile({ name, about, avatar }) {
-  console.log(avatar);
   profileTitle.textContent = name;
   profileDescription.textContent = about;
   profileAvatar.style.backgroundImage = `url(${avatar})`;
@@ -149,6 +152,22 @@ function updateUserData({ url, token }, payload) {
     headers: {
       authorization: token,
       "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      // console.log(result);
+    });
+}
+
+function updateUserPlace({url,token}, payload){
+ return fetch(url, {
+    method: "POST",
+    headers: {
+      authorization: token,
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/json;charset=utf-8'
     },
     body: JSON.stringify(payload),
   })
@@ -188,13 +207,14 @@ function getUserData({ url, token }) {
 }
 
 const userDataPromise = getUserData({
-  url: "https://nomoreparties.co/v1/cohort-mag-4//users/me",
+  url: "https://nomoreparties.co/v1/cohort-mag-4/users/me ",
   token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
 });
 
 // init app
 Promise.all([cardsPromise, userDataPromise]).then((data) => {
   const [initialCards, userData] = data;
+  console.log(data);
   createCards(initialCards);
   renderProfile(userData);
 });

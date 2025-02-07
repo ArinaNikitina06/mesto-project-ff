@@ -30,6 +30,7 @@ function removeCardHandler(event) {
 }
 
 function likeHandler(event) {
-  event.target.classList.toggle("card__like-button_is-active");}
+  event.target.classList.toggle("card__like-button_is-active");
+}
 
 export {createCard, removeCardHandler, likeHandler};
