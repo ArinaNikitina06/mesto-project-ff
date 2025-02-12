@@ -1,5 +1,5 @@
 function createCard(
-  { name, link },
+  { name, link, likes, owner },
   likeHandler,
   removeCardHandler,
   openCardHandler
@@ -13,24 +13,30 @@ function createCard(
   cardTitle.textContent = name;
   const cardImg = card.querySelector(".card__image");
   cardImg.src = link;
-  card
-    .querySelector(".card__delete-button")
-    .addEventListener("click", removeCardHandler);
+
+  if(owner._id === "682ca4b77ab2895ed6ba31ec"){
+    card
+      .querySelector(".card__delete-button")
+      .addEventListener("click", removeCardHandler);
+  } else {
+     card .querySelector(".card__delete-button").remove()
+  }
+
   card
     .querySelector(".card__like-button")
     .addEventListener("click", likeHandler);
   cardImg.addEventListener("click", () =>
     openCardHandler(cardImg.src, cardTitle.textContent)
   );
+  card.querySelector(".card__likes-counter").textContent = likes.length 
   return card;
 }
 
-function removeCardHandler(event) {
-  event.target.closest(".card").remove();
-}
+// function removeCardHandler(event) {
+//   event.target.closest(".card").remove();
+// }
 
-function likeHandler(event) {
-  event.target.classList.toggle("card__like-button_is-active");
-}
 
-export {createCard, removeCardHandler, likeHandler};
+
+// export {createCard, removeCardHandler, likeHandler};
+export {createCard};

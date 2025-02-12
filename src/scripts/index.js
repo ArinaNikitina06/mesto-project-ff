@@ -14,8 +14,6 @@ import initialCards from "./cards.js";
 import "../pages/index.css";
 import {
   createCard,
-  removeCardHandler,
-  likeHandler,
 } from "../components/card.js";
 import { openPopUp, closePopUp, closePopupByEsc } from "../components/modal.js";
 import {
@@ -92,7 +90,7 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
   const name = popupCreateNewCardTitleInput.value;
   const link = popupCreateNewCardDescriptionInput.value;
   const cardElement = createCard(
-    { name, link },
+    { name, link, likes: [] },
     likeHandler,
     removeCardHandler,
     openCardHandler
@@ -131,8 +129,38 @@ function createCards(initialCards) {
   initialCards.forEach((element) => {
     const cardElement = createCard(
       element,
-      likeHandler,
-      removeCardHandler,
+      // likeHandler
+      async (event) => {
+
+        if (event.target.classList.contains('card__like-button_is-active')) {
+          const result = await delLike({
+            url: `https://nomoreparties.co/v1/cohort-mag-4/cards/likes/${element._id}`,
+            token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+          });
+          cardElement.querySelector(".card__likes-counter").textContent = result.likes.length
+          cardElement
+          .querySelector(".card__like-button")
+          .classList.remove("card__like-button_is-active");
+          console.log('удалили лайк');
+        } else {
+          const result = await addLike({
+            url: `https://nomoreparties.co/v1/cohort-mag-4/cards/likes/${element._id}`,
+            token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+          });
+          cardElement.querySelector(".card__likes-counter").textContent = result.likes.length
+          cardElement
+          .querySelector(".card__like-button")
+          .classList.add("card__like-button_is-active");
+          console.log('добавили лайк');
+        }
+        
+      },
+      
+      // removeCardHandler
+      (event) => {
+        
+        console.log(element._id);
+      },
       openCardHandler
     );
     placesList.append(cardElement);
@@ -218,3 +246,30 @@ Promise.all([cardsPromise, userDataPromise]).then((data) => {
   createCards(initialCards);
   renderProfile(userData);
 });
+
+function addLike({ url, token }){
+   return fetch(url, {
+    method: "PUT",
+    headers: {
+      authorization: token,
+      "Content-Type": "application/json",
+    }
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      return result
+    });
+}
+function delLike({ url, token }) {
+  return fetch(url, {
+    method: "DELETE",
+    headers: {
+      authorization: token,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      return result;
+    });
+}
