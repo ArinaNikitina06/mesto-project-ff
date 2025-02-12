@@ -91,6 +91,7 @@
           </form>
         </div>
       </div>
+      
       <div class="popup popup_type_image">
         <div class="popup__content popup__content_content_image">
           <button type="button" class="popup__close"></button>
@@ -99,6 +100,27 @@
         </div>
       </div>
     </div>
+
+       <div class="popup popup_edit-avatar">
+        <div class="popup__content">
+          <button type="button" class="popup__close"></button>
+          <h3 class="popup__title">Обновить авaтар</h3>
+          <form class="popup__form" name="new-avatar">
+            <input
+              type="text"
+              name="new-avatar"
+              class="popup__input popup__input_type-new-avatar"
+              placeholder="avatar"
+              required
+            />
+            <span class="popup__input-error" data-name="form-input-error-new-avatar"></span>
+            <button type="submit" class="button popup__button">
+              Сохранить
+            </button>
+          </form>
+        </div>
+      </div>
+
 
     <template id="card-template">
       <li class="places__item card">

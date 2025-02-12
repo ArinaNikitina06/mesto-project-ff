@@ -30,6 +30,7 @@ const popupPlaceOpenButton = document.querySelector(".profile__add-button");
 const popupEdit = document.querySelector(".popup_type_edit");
 const popupNewPlace = document.querySelector(".popup_type_new-card");
 const popupImage = document.querySelector(".popup_type_image");
+const popupNewAvatar = document.querySelector(".popup_edit-avatar");
 
 const popupList = document.querySelectorAll(".popup");
 
@@ -54,6 +55,7 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
+
 
 enableValidation(popupEditForm, configPopupEditForm);
 enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
@@ -118,6 +120,11 @@ popupList.forEach((popup) => {
     }
   });
 });
+
+profileAvatar.addEventListener('click', () => {
+  openPopUp(popupNewAvatar);
+  // profileAvatar.style.backgroundImage = `url(${avatar})`;
+})
 
 function renderProfile({ name, about, avatar }) {
   profileTitle.textContent = name;
