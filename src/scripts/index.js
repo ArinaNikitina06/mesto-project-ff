@@ -157,9 +157,12 @@ function createCards(initialCards) {
       },
       
       // removeCardHandler
-      (event) => {
-        
-        console.log(element._id);
+      () => {
+        delCard({
+          url: `https://nomoreparties.co/v1/cohort-mag-4/cards/${element._id}`,
+          token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+        }).then(result => cardElement.remove())
+        // console.log(element._id);
       },
       openCardHandler
     );
@@ -260,6 +263,7 @@ function addLike({ url, token }){
       return result
     });
 }
+
 function delLike({ url, token }) {
   return fetch(url, {
     method: "DELETE",
@@ -272,4 +276,19 @@ function delLike({ url, token }) {
     .then((result) => {
       return result;
     });
+}
+
+function delCard({url, token}){
+return fetch(url, {
+  method: "DELETE",
+  headers: {
+    authorization: token,
+    "Content-Type": "application/json",
+  },
+})
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+    return result;
+  });
 }
