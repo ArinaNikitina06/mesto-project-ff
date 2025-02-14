@@ -17,6 +17,7 @@ import { openPopUp, closePopUp, closePopupByEsc } from "../components/modal.js";
 import {
   configPopupEditForm,
   configPopupCreateNewPlaceForm,
+  configPopupEditAvatarForm,
   enableValidation,
   clearValidation,
 } from "./validation.js";
@@ -59,6 +60,7 @@ const popupOpenImageDescription = document.querySelector(".popup__caption");
 
 enableValidation(popupEditForm, configPopupEditForm);
 enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
+enableValidation(popupEditAvatarForm, configPopupEditAvatarForm);
 
 popupProfileOpenButton.addEventListener("click", () => {
   popupEditProfileTitleInput.value = profileTitle.textContent;
@@ -161,8 +163,10 @@ popupList.forEach((popup) => {
 });
 
 profileAvatar.addEventListener("click", () => {
+  clearValidation(popupEditAvatarForm, configPopupEditAvatarForm);
   openPopUp(popupNewAvatar);
 });
+
 popupEditAvatarForm.addEventListener("submit", (event) => {
   event.preventDefault();
 

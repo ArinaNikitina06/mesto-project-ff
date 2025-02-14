@@ -74,6 +74,34 @@ const configPopupCreateNewPlaceForm = {
     disabled: true,
   },
 };
+
+const configPopupEditAvatarForm = {
+  selectors: {
+    input: ".popup__input",
+    spanError: ".popup__input-error",
+    button: ".popup__button",
+  },
+  inputsRule: {
+    ["new-avatar"]: {
+      isRequired: true,
+      between: {
+        min: 2,
+        max: 10000,
+      },
+      isUrl: true,
+      errorMessages: {
+        isRequired: "поле обязательно для заполнения",
+        between:
+          "В поле 'Ссылка на картинку' должно быть от 2 до 10000 символов",
+        isUrl: "'Ссылка на картинку' должен быть URL",
+      },
+    },
+  },
+  buttonRule: {
+    disabled: true,
+  },
+};
+
 function enableValidation(form, config) {
   const inputsList = form.querySelectorAll(config.selectors.input);
   const currentBtn = form.querySelector(config.selectors.button);
@@ -147,4 +175,5 @@ function clearValidation(form, config) {
   currentBtn.removeAttribute("disabled");
 }
 
-export {configPopupEditForm, configPopupCreateNewPlaceForm, enableValidation, clearValidation}
+
+export {configPopupEditForm, configPopupCreateNewPlaceForm, configPopupEditAvatarForm, enableValidation, clearValidation}
