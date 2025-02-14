@@ -12,9 +12,7 @@
 
 import initialCards from "./cards.js";
 import "../pages/index.css";
-import {
-  createCard,
-} from "../components/card.js";
+import { createCard } from "../components/card.js";
 import { openPopUp, closePopUp, closePopupByEsc } from "../components/modal.js";
 import {
   configPopupEditForm,
@@ -48,7 +46,7 @@ const popupEditProfileDescriptionInput = popupEdit.querySelector(
 );
 const popupEditForm = popupEdit.querySelector('[name="edit-profile"]');
 const popupNewPlaceForm = popupNewPlace.querySelector('[name="new-place"]');
-const popupEditAvatarForm = popupNewAvatar.querySelector('[name="new-avatar"]')
+const popupEditAvatarForm = popupNewAvatar.querySelector('[name="new-avatar"]');
 const popupCreateNewCardTitleInput = document.querySelector(
   ".popup__input_type_card-name"
 );
@@ -58,7 +56,6 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
-
 
 enableValidation(popupEditForm, configPopupEditForm);
 enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
@@ -80,13 +77,16 @@ popupEditForm.addEventListener("submit", (e) => {
   profileTitle.textContent = popupEditProfileTitleInput.value;
   profileDescription.textContent = popupEditProfileDescriptionInput.value;
   closePopUp(popupEdit);
-  updateUserData({
-  url: "https://nomoreparties.co/v1/cohort-mag-4/users/me",
-  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
-}, {
-    name: popupEditProfileTitleInput.value,
-    about: popupEditProfileDescriptionInput.value,
-  });
+  updateUserData(
+    {
+      url: "https://nomoreparties.co/v1/cohort-mag-4/users/me",
+      token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+    },
+    {
+      name: popupEditProfileTitleInput.value,
+      about: popupEditProfileDescriptionInput.value,
+    }
+  );
   e.target.reset();
 });
 
@@ -94,22 +94,58 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const name = popupCreateNewCardTitleInput.value;
   const link = popupCreateNewCardDescriptionInput.value;
-  const cardElement = createCard(
-    { name, link, likes: [] },
-    likeHandler,
-    removeCardHandler,
-    openCardHandler
-  );
-  placesList.prepend(cardElement);
-  closePopUp(popupNewPlace);
-  updateUserPlace({
-  url: "https://nomoreparties.co/v1/cohort-mag-4/cards",
-  token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
-}, {name: name,
-    link: link
-  })
-  
-  e.target.reset();
+
+  updateUserPlace(
+    {
+      url: "https://nomoreparties.co/v1/cohort-mag-4/cards",
+      token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+    },
+    { name: name, link: link }
+  ).then((res) => {
+    const idCreatedCard = res._id;
+    const owner = res.owner
+
+    const cardElement = createCard(
+      { name, link, likes: [], owner },
+      // likeHandler
+      async (event) => {
+        if (event.target.classList.contains("card__like-button_is-active")) {
+          const result = await delLike({
+            url: `https://nomoreparties.co/v1/cohort-mag-4/cards/likes/${idCreatedCard}`,
+            token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+          });
+          cardElement.querySelector(".card__likes-counter").textContent =
+            result.likes.length;
+          cardElement
+            .querySelector(".card__like-button")
+            .classList.remove("card__like-button_is-active");
+          console.log("удалили лайк");
+        } else {
+          const result = await addLike({
+            url: `https://nomoreparties.co/v1/cohort-mag-4/cards/likes/${idCreatedCard}`,
+            token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+          });
+          cardElement.querySelector(".card__likes-counter").textContent =
+            result.likes.length;
+          cardElement
+            .querySelector(".card__like-button")
+            .classList.add("card__like-button_is-active");
+          console.log("добавили лайк");
+        }
+      },
+      () => {
+        delCard({
+          url: `https://nomoreparties.co/v1/cohort-mag-4/cards/${idCreatedCard}`,
+          token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+        }).then((result) => cardElement.remove());
+    },
+      openCardHandler
+    );
+    placesList.prepend(cardElement);
+    closePopUp(popupNewPlace);
+
+    e.target.reset();
+  });
 });
 
 popupList.forEach((popup) => {
@@ -124,10 +160,10 @@ popupList.forEach((popup) => {
   });
 });
 
-profileAvatar.addEventListener('click', () => {
+profileAvatar.addEventListener("click", () => {
   openPopUp(popupNewAvatar);
-})
-popupEditAvatarForm.addEventListener('submit', (event) => {
+});
+popupEditAvatarForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   updateUserData(
@@ -136,14 +172,16 @@ popupEditAvatarForm.addEventListener('submit', (event) => {
       token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
     },
     { avatar: popupNewAvatarInput.value }
-  ).then((res) => {
-    if(res.errors) {
-      throw new Error("update user avatar failed!");
-    }
-    // успех
-     profileAvatar.style.backgroundImage = `url(${popupNewAvatarInput.value})`;
-  }).catch((error) => console.error('test->',error))
-})
+  )
+    .then((res) => {
+      if (res.errors) {
+        throw new Error("update user avatar failed!");
+      }
+      // успех
+      profileAvatar.style.backgroundImage = `url(${popupNewAvatarInput.value})`;
+    })
+    .catch((error) => console.error("test->", error));
+});
 
 // popupNewAvatarInput;
 
@@ -159,37 +197,37 @@ function createCards(initialCards) {
       element,
       // likeHandler
       async (event) => {
-
-        if (event.target.classList.contains('card__like-button_is-active')) {
+        if (event.target.classList.contains("card__like-button_is-active")) {
           const result = await delLike({
             url: `https://nomoreparties.co/v1/cohort-mag-4/cards/likes/${element._id}`,
             token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
           });
-          cardElement.querySelector(".card__likes-counter").textContent = result.likes.length
+          cardElement.querySelector(".card__likes-counter").textContent =
+            result.likes.length;
           cardElement
-          .querySelector(".card__like-button")
-          .classList.remove("card__like-button_is-active");
-          console.log('удалили лайк');
+            .querySelector(".card__like-button")
+            .classList.remove("card__like-button_is-active");
+          console.log("удалили лайк");
         } else {
           const result = await addLike({
             url: `https://nomoreparties.co/v1/cohort-mag-4/cards/likes/${element._id}`,
             token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
           });
-          cardElement.querySelector(".card__likes-counter").textContent = result.likes.length
+          cardElement.querySelector(".card__likes-counter").textContent =
+            result.likes.length;
           cardElement
-          .querySelector(".card__like-button")
-          .classList.add("card__like-button_is-active");
-          console.log('добавили лайк');
+            .querySelector(".card__like-button")
+            .classList.add("card__like-button_is-active");
+          console.log("добавили лайк");
         }
-        
       },
-      
+
       // removeCardHandler
       () => {
         delCard({
           url: `https://nomoreparties.co/v1/cohort-mag-4/cards/${element._id}`,
           token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
-        }).then(result => cardElement.remove())
+        }).then((result) => cardElement.remove());
         // console.log(element._id);
       },
       openCardHandler
@@ -216,13 +254,13 @@ function updateUserData({ url, token }, payload) {
   })
     .then((res) => res.json())
     .then((result) => {
-      return result
+      return result;
       // console.log(result);
     });
 }
 
-function updateUserPlace({url,token}, payload){
- return fetch(url, {
+function updateUserPlace({ url, token }, payload) {
+  return fetch(url, {
     method: "POST",
     headers: {
       authorization: token,
@@ -233,7 +271,7 @@ function updateUserPlace({url,token}, payload){
   })
     .then((res) => res.json())
     .then((result) => {
-      console.log(result);
+      return result;
     });
 }
 
@@ -279,17 +317,17 @@ Promise.all([cardsPromise, userDataPromise]).then((data) => {
   renderProfile(userData);
 });
 
-function addLike({ url, token }){
-   return fetch(url, {
+function addLike({ url, token }) {
+  return fetch(url, {
     method: "PUT",
     headers: {
       authorization: token,
       "Content-Type": "application/json",
-    }
+    },
   })
     .then((res) => res.json())
     .then((result) => {
-      return result
+      return result;
     });
 }
 
@@ -307,17 +345,17 @@ function delLike({ url, token }) {
     });
 }
 
-function delCard({url, token}){
-return fetch(url, {
-  method: "DELETE",
-  headers: {
-    authorization: token,
-    "Content-Type": "application/json",
-  },
-})
-  .then((res) => res.json())
-  .then((result) => {
-    console.log(result);
-    return result;
-  });
+function delCard({ url, token }) {
+  return fetch(url, {
+    method: "DELETE",
+    headers: {
+      authorization: token,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      console.log(result);
+      return result;
+    });
 }
