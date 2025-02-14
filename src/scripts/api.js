@@ -1,96 +1,65 @@
-function addLike({ url, token }) {
-  return fetch(url, {
+function addLike({ baseUrl, headers }) {
+  return fetch(baseUrl, {
     method: "PUT",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-    },
+		headers,
   })
     .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
+    .then((result) => result);
 }
 
-function delLike({ url, token }) {
-  return fetch(url, {
+function delLike({ baseUrl, headers }) {
+  return fetch(baseUrl, {
     method: "DELETE",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-    },
+		headers,
   })
     .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
+    .then((result) => result);
 }
 
-function delCard({ url, token }) {
-  return fetch(url, {
+function delCard({ baseUrl, headers }) {
+  return fetch(baseUrl, {
     method: "DELETE",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-    },
+		headers,
   })
     .then((res) => res.json())
-    .then((result) => {
-      console.log(result);
-      return result;
-    });
+    .then((result) => result);
 }
-function getUserData({ url, token }) {
-  return fetch(url, {
-    headers: {
-      authorization: token,
-    },
-  })
+function getUserData({ baseUrl, headers }) {
+  return fetch(baseUrl, {
+		headers
+	})
     .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
+    .then((result) => result);
 }
-function getCards({ url, token }) {
-  return fetch(url, {
-    headers: {
-      authorization: token,
-    },
-  })
+
+function getCards({ baseUrl, headers }) {
+  return fetch(baseUrl, {
+		headers
+	})
     .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
+    .then((result) => result);
 }
-function updateUserPlace({ url, token }, payload) {
-  return fetch(url, {
+
+function updateUserPlace({ baseUrl, headers }, payload) {
+  return fetch(baseUrl, {
     method: "POST",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-      // 'Content-Type': 'application/json;charset=utf-8'
-    },
     body: JSON.stringify(payload),
+		headers,
   })
     .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
+    .then((result) => result);
 }
-function updateUserData({ url, token }, payload) {
-  return fetch(url, {
+
+function updateUserData({ baseUrl, headers }, payload) {
+  return fetch(baseUrl, {
     method: "PATCH",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(payload),
+		headers,
   })
     .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
+    .then((result) => result);
 }
+
 export {
   addLike,
   updateUserData,
