@@ -22,6 +22,16 @@ import {
   clearValidation,
 } from "./validation.js";
 
+import{
+  addLike,
+  updateUserData,
+  updateUserPlace,
+  getCards,
+  getUserData,
+  delCard,
+  delLike,
+} from "./api.js";
+
 const placesList = document.querySelector(".places__list");
 const popupProfileOpenButton = document.querySelector(".profile__edit-button");
 const popupPlaceOpenButton = document.querySelector(".profile__add-button");
@@ -253,66 +263,10 @@ function openCardHandler(src, title) {
   openPopUp(popupImage);
 }
 
-function updateUserData({ url, token }, payload) {
-  return fetch(url, {
-    method: "PATCH",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  })
-    .then((res) => res.json())
-    .then((result) => {
-      return result;
-      // console.log(result);
-    });
-}
-
-function updateUserPlace({ url, token }, payload) {
-  return fetch(url, {
-    method: "POST",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-      // 'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(payload),
-  })
-    .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
-}
-
-function getCards({ url, token }) {
-  return fetch(url, {
-    headers: {
-      authorization: token,
-    },
-  })
-    .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
-}
-
 const cardsPromise = getCards({
   url: "https://nomoreparties.co/v1/cohort-mag-4/cards",
   token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
 });
-
-function getUserData({ url, token }) {
-  return fetch(url, {
-    headers: {
-      authorization: token,
-    },
-  })
-    .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
-}
 
 const userDataPromise = getUserData({
   url: "https://nomoreparties.co/v1/cohort-mag-4/users/me ",
@@ -326,46 +280,3 @@ Promise.all([cardsPromise, userDataPromise]).then((data) => {
   createCards(initialCards);
   renderProfile(userData);
 });
-
-function addLike({ url, token }) {
-  return fetch(url, {
-    method: "PUT",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
-}
-
-function delLike({ url, token }) {
-  return fetch(url, {
-    method: "DELETE",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((result) => {
-      return result;
-    });
-}
-
-function delCard({ url, token }) {
-  return fetch(url, {
-    method: "DELETE",
-    headers: {
-      authorization: token,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((result) => {
-      console.log(result);
-      return result;
-    });
-}
