@@ -76,9 +76,7 @@ popupPlaceOpenButton.addEventListener("click", () => {
 
 popupEditForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  profileTitle.textContent = popupEditProfileTitleInput.value;
-  profileDescription.textContent = popupEditProfileDescriptionInput.value;
-  closePopUp(popupEdit);
+  e.target.querySelector(".popup__button").textContent = "Сохранение...";
   updateUserData(
     {
       url: "https://nomoreparties.co/v1/cohort-mag-4/users/me",
@@ -88,14 +86,22 @@ popupEditForm.addEventListener("submit", (e) => {
       name: popupEditProfileTitleInput.value,
       about: popupEditProfileDescriptionInput.value,
     }
-  );
-  e.target.reset();
+  ).then(res => {
+
+    profileTitle.textContent = popupEditProfileTitleInput.value;
+    profileDescription.textContent = popupEditProfileDescriptionInput.value;
+    closePopUp(popupEdit);
+    
+    e.target.reset();
+  })
 });
 
 popupNewPlaceForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const name = popupCreateNewCardTitleInput.value;
   const link = popupCreateNewCardDescriptionInput.value;
+
+  e.target.querySelector(".popup__button").textContent = "Сохранение...";
 
   updateUserPlace(
     {
@@ -105,7 +111,7 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
     { name: name, link: link }
   ).then((res) => {
     const idCreatedCard = res._id;
-    const owner = res.owner
+    const owner = res.owner;
 
     const cardElement = createCard(
       { name, link, likes: [], owner },
@@ -140,7 +146,7 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
           url: `https://nomoreparties.co/v1/cohort-mag-4/cards/${idCreatedCard}`,
           token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
         }).then((result) => cardElement.remove());
-    },
+      },
       openCardHandler
     );
     placesList.prepend(cardElement);
@@ -169,7 +175,7 @@ profileAvatar.addEventListener("click", () => {
 
 popupEditAvatarForm.addEventListener("submit", (event) => {
   event.preventDefault();
-
+  event.target.querySelector(".popup__button").textContent = "Сохранение...";
   updateUserData(
     {
       url: `https://nomoreparties.co/v1/cohort-mag-4/users/me/avatar`,
