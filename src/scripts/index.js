@@ -31,6 +31,9 @@ const popupEdit = document.querySelector(".popup_type_edit");
 const popupNewPlace = document.querySelector(".popup_type_new-card");
 const popupImage = document.querySelector(".popup_type_image");
 const popupNewAvatar = document.querySelector(".popup_edit-avatar");
+const popupNewAvatarInput = popupNewAvatar.querySelector(
+  ".popup__input_type-new-avatar"
+);
 
 const popupList = document.querySelectorAll(".popup");
 
@@ -45,7 +48,7 @@ const popupEditProfileDescriptionInput = popupEdit.querySelector(
 );
 const popupEditForm = popupEdit.querySelector('[name="edit-profile"]');
 const popupNewPlaceForm = popupNewPlace.querySelector('[name="new-place"]');
-
+const popupEditAvatarForm = popupNewAvatar.querySelector('[name="new-avatar"]')
 const popupCreateNewCardTitleInput = document.querySelector(
   ".popup__input_type_card-name"
 );
@@ -123,8 +126,26 @@ popupList.forEach((popup) => {
 
 profileAvatar.addEventListener('click', () => {
   openPopUp(popupNewAvatar);
-  // profileAvatar.style.backgroundImage = `url(${avatar})`;
 })
+popupEditAvatarForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  updateUserData(
+    {
+      url: `https://nomoreparties.co/v1/cohort-mag-4/users/me/avatar`,
+      token: "2e6ea80b-30a6-4c71-bab6-c324b53f8521",
+    },
+    { avatar: popupNewAvatarInput.value }
+  ).then((res) => {
+    if(res.errors) {
+      throw new Error("update user avatar failed!");
+    }
+    // успех
+     profileAvatar.style.backgroundImage = `url(${popupNewAvatarInput.value})`;
+  }).catch((error) => console.error('test->',error))
+})
+
+// popupNewAvatarInput;
 
 function renderProfile({ name, about, avatar }) {
   profileTitle.textContent = name;
@@ -195,6 +216,7 @@ function updateUserData({ url, token }, payload) {
   })
     .then((res) => res.json())
     .then((result) => {
+      return result
       // console.log(result);
     });
 }
