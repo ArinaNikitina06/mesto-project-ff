@@ -186,8 +186,6 @@ popupEditAvatarForm.addEventListener("submit", (event) => {
     .catch((error) => console.error("test->", error));
 });
 
-
-
 function renderProfile({ name, about, avatar }) {
   profileTitle.textContent = name;
   profileDescription.textContent = about;
