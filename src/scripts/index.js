@@ -180,13 +180,13 @@ popupEditAvatarForm.addEventListener("submit", (event) => {
       if (res.errors) {
         throw new Error("update user avatar failed!");
       }
-      // успех
+   
       profileAvatar.style.backgroundImage = `url(${popupNewAvatarInput.value})`;
     })
     .catch((error) => console.error("test->", error));
 });
 
-// popupNewAvatarInput;
+
 
 function renderProfile({ name, about, avatar }) {
   profileTitle.textContent = name;
@@ -198,7 +198,7 @@ function createCards(initialCards) {
   initialCards.forEach((element) => {
     const cardElement = createCard(
       element,
-      // likeHandler
+   
       async (event) => {
         if (event.target.classList.contains("card__like-button_is-active")) {
           const result = await delLike({...config, baseUrl: config.baseUrl + `/cards/likes/${element._id}`});
@@ -219,11 +219,10 @@ function createCards(initialCards) {
         }
       },
 
-      // removeCardHandler
+    
       () => {
         delCard({...config, baseUrl: config.baseUrl + `/cards/${element._id}`}
           ).then((result) => cardElement.remove());
-        // console.log(element._id);
       },
       openCardHandler
     );
@@ -242,7 +241,6 @@ const cardsPromise = getCards({...config, baseUrl: config.baseUrl + `/cards`});
 
 const userDataPromise = getUserData( {...config, baseUrl: config.baseUrl + `/users/me`});
 
-// init app
 Promise.all([cardsPromise, userDataPromise]).then((data) => {
   const [initialCards, userData] = data;
   console.log(data);
