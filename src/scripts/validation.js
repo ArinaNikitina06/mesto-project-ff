@@ -35,6 +35,9 @@ const configPopupEditForm = {
   buttonRule: {
     disabled: true,
   },
+  formRule:{
+reset: false
+  }
 };
 const configPopupCreateNewPlaceForm = {
   selectors: {
@@ -74,6 +77,9 @@ const configPopupCreateNewPlaceForm = {
   buttonRule: {
     disabled: true,
   },
+  formRule: {
+    reset: true,
+  },
 };
 
 const configPopupEditAvatarForm = {
@@ -100,6 +106,9 @@ const configPopupEditAvatarForm = {
   },
   buttonRule: {
     disabled: true,
+  },
+  formRule: {
+    reset: true,
   },
 };
 
@@ -129,15 +138,14 @@ function enableValidation(form, config) {
     );
 
     if (currentInput.value.trim().length === 0) {
-          state.inputsStatus[currentInput.name] = false;
+      state.inputsStatus[currentInput.name] = false;
     } else {
       state.inputsStatus[currentInput.name] = true;
     }
-    
+
     currentInput.addEventListener("input", (e) => {
       const rulesCurrentInput = config.inputsRule[currentInput.name];
 
-  
       if (
         rulesCurrentInput.isRequired === true &&
         currentInput.value.trim().length === 0
@@ -150,7 +158,6 @@ function enableValidation(form, config) {
         return;
       }
 
-   
       if (
         currentInput.value.trim().length < rulesCurrentInput.between.min ||
         currentInput.value.trim().length > rulesCurrentInput.between.max
@@ -210,6 +217,11 @@ function clearValidation(form, config) {
   spansList.forEach((currentSpan) => {
     currentSpan.classList.remove("popup__input-error_active");
   });
+
+  if (config.formRule.reset) {
+    form.reset();
+  }
+  
   currentBtn.removeAttribute("disabled");
 }
 
