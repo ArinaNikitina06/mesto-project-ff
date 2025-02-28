@@ -70,14 +70,15 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
 
-enableValidation(popupEditForm, configPopupEditForm);
+// enableValidation(popupEditForm, configPopupEditForm);
 // enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
-enableValidation(popupEditAvatarForm, configPopupEditAvatarForm);
+// enableValidation(popupEditAvatarForm, configPopupEditAvatarForm);
 
 popupProfileOpenButton.addEventListener("click", () => {
   popupEditProfileTitleInput.value = profileTitle.textContent;
   popupEditProfileDescriptionInput.value = profileDescription.textContent;
   clearValidation(popupEditForm, configPopupEditForm);
+  enableValidation(popupEditForm, configPopupEditForm);
   openPopUp(popupEdit);
 });
 
@@ -167,24 +168,26 @@ popupList.forEach((popup) => {
 
 profileAvatar.addEventListener("click", () => {
   clearValidation(popupEditAvatarForm, configPopupEditAvatarForm);
+  enableValidation(popupEditAvatarForm, configPopupEditAvatarForm);
   openPopUp(popupNewAvatar);
 });
 
 popupEditAvatarForm.addEventListener("submit", (event) => {
   event.preventDefault();
   event.target.querySelector(".popup__button").textContent = "Сохранение...";
-  updateUserData( {...config, baseUrl: config.baseUrl + `/users/me/avatar`}
-  ,
+  updateUserData(
+    { ...config, baseUrl: config.baseUrl + `/users/me/avatar` },
     { avatar: popupNewAvatarInput.value }
   )
     .then((res) => {
       if (res.errors) {
         throw new Error("update user avatar failed!");
       }
-   
+
       profileAvatar.style.backgroundImage = `url(${popupNewAvatarInput.value})`;
     })
-    .catch((error) => console.error("test->", error));
+    .catch((error) => console.error("test->", error))
+    .finally(() => closePopUp(popupNewAvatar));
 });
 
 function renderProfile({ name, about, avatar }) {

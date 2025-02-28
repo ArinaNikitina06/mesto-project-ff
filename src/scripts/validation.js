@@ -128,8 +128,11 @@ function enableValidation(form, config) {
       `[data-name="form-input-error-${currentInput.name}"]`
     );
 
-    state.inputsStatus[currentInput.name] = false;
-
+    if (currentInput.value.trim().length === 0) {
+          state.inputsStatus[currentInput.name] = false;
+    } else {
+      state.inputsStatus[currentInput.name] = true;
+    }
     
     currentInput.addEventListener("input", (e) => {
       const rulesCurrentInput = config.inputsRule[currentInput.name];
