@@ -71,7 +71,7 @@ const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
 
 enableValidation(popupEditForm, configPopupEditForm);
-enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
+// enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
 enableValidation(popupEditAvatarForm, configPopupEditAvatarForm);
 
 popupProfileOpenButton.addEventListener("click", () => {
@@ -83,6 +83,7 @@ popupProfileOpenButton.addEventListener("click", () => {
 
 popupPlaceOpenButton.addEventListener("click", () => {
   clearValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
+  enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
   openPopUp(popupNewPlace);
 });
 

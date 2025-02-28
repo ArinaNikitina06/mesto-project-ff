@@ -65,7 +65,8 @@ const configPopupCreateNewPlaceForm = {
       isUrl: true,
       errorMessages: {
         isRequired: "поле обязательно для заполнения",
-        between: "В поле 'Ссылка на картинку' должно быть от 2 до 10000 символов",
+        between:
+          "В поле 'Ссылка на картинку' должно быть от 2 до 10000 символов",
         isUrl: "'Ссылка на картинку' должен быть URL",
       },
     },
@@ -107,15 +108,33 @@ function enableValidation(form, config) {
   const currentBtn = form.querySelector(config.selectors.button);
   const spansList = form.querySelectorAll(config.selectors.spanError);
 
+  /* 
+  
+  {
+    name: false,
+    desc: false
+  }
+
+  false - не заполнено
+  true - заполнено
+  
+  */
+  const state = {
+    inputsStatus: {},
+  };
+
   inputsList.forEach((currentInput) => {
     const currentSpan = form.querySelector(
       `[data-name="form-input-error-${currentInput.name}"]`
     );
 
+    state.inputsStatus[currentInput.name] = false;
+
+    
     currentInput.addEventListener("input", (e) => {
       const rulesCurrentInput = config.inputsRule[currentInput.name];
 
-      // error isRequired
+  
       if (
         rulesCurrentInput.isRequired === true &&
         currentInput.value.trim().length === 0
@@ -124,10 +143,11 @@ function enableValidation(form, config) {
         currentSpan.classList.add("popup__input-error_active");
         currentSpan.textContent = rulesCurrentInput.errorMessages.isRequired;
         currentBtn.setAttribute("disabled", "disabled");
+        state.inputsStatus[currentInput.name] = true;
         return;
       }
 
-      // error between
+   
       if (
         currentInput.value.trim().length < rulesCurrentInput.between.min ||
         currentInput.value.trim().length > rulesCurrentInput.between.max
@@ -140,8 +160,8 @@ function enableValidation(form, config) {
       }
 
       if (
-        (rulesCurrentInput.isUrl === true &&
-          !currentInput.value.includes("http://")) &&
+        rulesCurrentInput.isUrl === true &&
+        !currentInput.value.includes("http://") &&
         !currentInput.value.includes("https://")
       ) {
         currentInput.classList.add("popup__input_type-error");
@@ -152,12 +172,27 @@ function enableValidation(form, config) {
       }
 
       // success, clean error
-        currentInput.classList.remove("popup__input_type-error");
-        currentSpan.classList.remove("popup__input-error_active");
-        currentSpan.textContent = "";
-        currentBtn.removeAttribute("disabled");
+      currentInput.classList.remove("popup__input_type-error");
+      currentSpan.classList.remove("popup__input-error_active");
+      currentSpan.textContent = "";
+      currentBtn.removeAttribute("disabled");
+      state.inputsStatus[currentInput.name] = true;
+
+      console.log(state.inputsStatus);
+
+      if (Object.values(state.inputsStatus).includes(false)) {
+        console.log("нашли какой то пустой");
+        currentBtn.setAttribute("disabled", "disabled");
+      }
     });
   });
+
+  // ------------------
+  if (!Object.values(state.inputsStatus).includes(true)) {
+    console.log("все пустые блокируем кнопку", state.inputsStatus);
+    currentBtn.setAttribute("disabled", "disabled");
+  }
+  // console.log(Object.values(state.inputsStatus));
 }
 
 function clearValidation(form, config) {
@@ -175,5 +210,10 @@ function clearValidation(form, config) {
   currentBtn.removeAttribute("disabled");
 }
 
-
-export {configPopupEditForm, configPopupCreateNewPlaceForm, configPopupEditAvatarForm, enableValidation, clearValidation}
+export {
+  configPopupEditForm,
+  configPopupCreateNewPlaceForm,
+  configPopupEditAvatarForm,
+  enableValidation,
+  clearValidation,
+};
