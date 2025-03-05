@@ -245,7 +245,8 @@ const userDataPromise = getUserData( {...config, baseUrl: config.baseUrl + `/use
 
 Promise.all([cardsPromise, userDataPromise]).then((data) => {
   const [initialCards, userData] = data;
-  console.log(data);
+  // console.log(data);
+  // console.log('user data', userData);
   createCards(initialCards);
   renderProfile(userData);
 });
