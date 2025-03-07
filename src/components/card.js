@@ -2,7 +2,8 @@ function createCard(
   { name, link, likes, owner },
   likeHandler,
   removeCardHandler,
-  openCardHandler
+  openCardHandler,
+  userId
 ) {
   const getTemplateCard = document
     .querySelector("#card-template")
@@ -14,20 +15,12 @@ function createCard(
   const cardImg = card.querySelector(".card__image");
   cardImg.src = link;
 
-  /* 
-  
-  TODO:
-  - owner это мы, там есть наш _id
-  - likes это массив всех кто поставил лайки, в каждом объекте есть _id
-  надо найти нас среди бъектов likes, если мы там есть то добавлять закрашенный лайк
-  
-  
-  */
-  // console.log('11111', owner);
-  // console.log("22222", likes);
+ 
 
   function isLike() {
-    const result = likes.find((like) => like._id === "682ca4b77ab2895ed6ba31ec");
+    const result = likes.find(
+      (like) => like._id ===  userId
+    );
 
     if (result) {
       return true;
@@ -36,9 +29,7 @@ function createCard(
     return false;
   }
 
-
-
-  if (owner._id === "682ca4b77ab2895ed6ba31ec") {
+  if (owner._id === userId) {
     card
       .querySelector(".card__delete-button")
       .addEventListener("click", removeCardHandler);

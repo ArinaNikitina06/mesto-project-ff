@@ -34,6 +34,7 @@ import{
 
 import {config} from './config.js';
 
+let userId = ''
 const placesList = document.querySelector(".places__list");
 const popupProfileOpenButton = document.querySelector(".profile__edit-button");
 const popupPlaceOpenButton = document.querySelector(".profile__add-button");
@@ -123,7 +124,10 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
       // likeHandler
       async (event) => {
         if (event.target.classList.contains("card__like-button_is-active")) {
-          const result = await delLike({...config, baseUrl: config.baseUrl + `/cards/likes/${idCreatedCard}`},);
+          const result = await delLike({
+            ...config,
+            baseUrl: config.baseUrl + `/cards/likes/${idCreatedCard}`,
+          });
           cardElement.querySelector(".card__likes-counter").textContent =
             result.likes.length;
           cardElement
@@ -131,7 +135,10 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
             .classList.remove("card__like-button_is-active");
           console.log("удалили лайк");
         } else {
-          const result = await addLike({...config, baseUrl: config.baseUrl + `/cards/likes/${idCreatedCard}`});
+          const result = await addLike({
+            ...config,
+            baseUrl: config.baseUrl + `/cards/likes/${idCreatedCard}`,
+          });
           cardElement.querySelector(".card__likes-counter").textContent =
             result.likes.length;
           cardElement
@@ -141,11 +148,13 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
         }
       },
       () => {
-        delCard(
-          {...config, baseUrl: config.baseUrl + `/cards/${idCreatedCard}`}
-          ).then((result) => cardElement.remove());
+        delCard({
+          ...config,
+          baseUrl: config.baseUrl + `/cards/${idCreatedCard}`,
+        }).then((result) => cardElement.remove());
       },
-      openCardHandler
+      openCardHandler,
+      userId
     );
     placesList.prepend(cardElement);
     closePopUp(popupNewPlace);
@@ -226,7 +235,8 @@ function createCards(initialCards) {
         delCard({...config, baseUrl: config.baseUrl + `/cards/${element._id}`}
           ).then((result) => cardElement.remove());
       },
-      openCardHandler
+      openCardHandler,
+      userId
     );
     placesList.append(cardElement);
   });
@@ -245,6 +255,7 @@ const userDataPromise = getUserData( {...config, baseUrl: config.baseUrl + `/use
 
 Promise.all([cardsPromise, userDataPromise]).then((data) => {
   const [initialCards, userData] = data;
+  userId = userData._id
   // console.log(data);
   // console.log('user data', userData);
   createCards(initialCards);
