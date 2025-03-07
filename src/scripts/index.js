@@ -27,14 +27,11 @@ import {
 } from "./validation.js";
 
 import {
-  addLike,
   updateUserData,
   updateUserPlace,
   getCards,
   getUserData,
-  delCard,
-  delLike,
-} from "./api.js";
+} from "../components/api.js";
 
 import { config } from "./config.js";
 
@@ -102,13 +99,17 @@ popupEditForm.addEventListener("submit", (e) => {
       name: popupEditProfileTitleInput.value,
       about: popupEditProfileDescriptionInput.value,
     }
-  ).then((res) => {
-    profileTitle.textContent = popupEditProfileTitleInput.value;
-    profileDescription.textContent = popupEditProfileDescriptionInput.value;
-    closePopUp(popupEdit);
+  )
+    .then((res) => {
+      profileTitle.textContent = popupEditProfileTitleInput.value;
+      profileDescription.textContent = popupEditProfileDescriptionInput.value;
+      closePopUp(popupEdit);
 
-    e.target.reset();
-  });
+      e.target.reset();
+    })
+    .catch((error) => {
+      console.warn(error);
+    });
 });
 
 popupNewPlaceForm.addEventListener("submit", (e) => {
@@ -121,29 +122,33 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
   updateUserPlace(
     { ...config, baseUrl: config.baseUrl + "/cards" },
     { name: name, link: link }
-  ).then((res) => {
-    const idCreatedCard = res._id;
-    const owner = res.owner;
+  )
+    .then((res) => {
+      const idCreatedCard = res._id;
+      const owner = res.owner;
 
-    const cardElement = createCard(
-      { name, link, likes: [], owner },
-      // likeHandler
-      (event) => {
-        if (event.target.classList.contains("card__like-button_is-active")) {
-          delLikeHandler(idCreatedCard, cardElement);
-        } else {
-          addLikeHandler(idCreatedCard, cardElement);
-        }
-      },
-      () => delCardHandler(idCreatedCard, cardElement),
-      openCardHandler,
-      userId
-    );
-    placesList.prepend(cardElement);
-    closePopUp(popupNewPlace);
+      const cardElement = createCard(
+        { name, link, likes: [], owner },
+        // likeHandler
+        (event) => {
+          if (event.target.classList.contains("card__like-button_is-active")) {
+            delLikeHandler(idCreatedCard, cardElement);
+          } else {
+            addLikeHandler(idCreatedCard, cardElement);
+          }
+        },
+        () => delCardHandler(idCreatedCard, cardElement),
+        openCardHandler,
+        userId
+      );
+      placesList.prepend(cardElement);
+      closePopUp(popupNewPlace);
 
-    e.target.reset();
-  });
+      e.target.reset();
+    })
+    .catch((error) => {
+      console.warn(error);
+    });
 });
 
 popupList.forEach((popup) => {
@@ -178,7 +183,9 @@ popupEditAvatarForm.addEventListener("submit", (event) => {
 
       profileAvatar.style.backgroundImage = `url(${popupNewAvatarInput.value})`;
     })
-    .catch((error) => console.error("test->", error))
+    .catch((error) => {
+      console.warn(error);
+    })
     .finally(() => closePopUp(popupNewAvatar));
 });
 
@@ -225,11 +232,15 @@ const userDataPromise = getUserData({
   baseUrl: config.baseUrl + `/users/me`,
 });
 
-Promise.all([cardsPromise, userDataPromise]).then((data) => {
-  const [initialCards, userData] = data;
-  userId = userData._id;
-  // console.log(data);
-  // console.log('user data', userData);
-  createCards(initialCards);
-  renderProfile(userData);
-});
+Promise.all([cardsPromise, userDataPromise])
+  .then((data) => {
+    const [initialCards, userData] = data;
+    userId = userData._id;
+    // console.log(data);
+    // console.log('user data', userData);
+    createCards(initialCards);
+    renderProfile(userData);
+  })
+  .catch((error) => {
+    console.warn(error);
+  });

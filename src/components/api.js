@@ -1,8 +1,8 @@
-function handleResponce(res){
-    if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
+function handleResponce(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка: ${res.status}`);
 }
 
 function addLike({ baseUrl, headers }) {
@@ -11,8 +11,6 @@ function addLike({ baseUrl, headers }) {
     headers,
   })
     .then(handleResponce)
-    .then((result) => result)
-    .catch((error) => console.log("my error ->", error));
 }
 
 function delLike({ baseUrl, headers }) {
@@ -21,8 +19,6 @@ function delLike({ baseUrl, headers }) {
     headers,
   })
     .then(handleResponce)
-    .then((result) => result)
-    .catch((error) => console.log("my error ->", error));
 }
 
 function delCard({ baseUrl, headers }) {
@@ -31,16 +27,13 @@ function delCard({ baseUrl, headers }) {
     headers,
   })
     .then(handleResponce)
-    .then((result) => result)
-    .catch((error) => console.log("my error ->", error));
 }
+
 function getUserData({ baseUrl, headers }) {
   return fetch(baseUrl, {
     headers,
   })
-    .then(handleResponce )
-    .then((result) => result)
-    .catch((error) => console.log("my error ->", error));
+    .then(handleResponce)
 }
 
 function getCards({ baseUrl, headers }) {
@@ -48,8 +41,6 @@ function getCards({ baseUrl, headers }) {
     headers,
   })
     .then(handleResponce)
-    .then((result) => result)
-    .catch((error) => console.log("my error ->", error));
 }
 
 function updateUserPlace({ baseUrl, headers }, payload) {
@@ -59,8 +50,6 @@ function updateUserPlace({ baseUrl, headers }, payload) {
     headers,
   })
     .then(handleResponce)
-    .then((result) => result)
-    .catch((error) => console.log("my error ->", error));
 }
 
 function updateUserData({ baseUrl, headers }, payload) {
@@ -70,8 +59,6 @@ function updateUserData({ baseUrl, headers }, payload) {
     headers,
   })
     .then(handleResponce)
-    .then((result) => result)
-    .catch((error) => console.log("my error ->", error));
 }
 
 export {
