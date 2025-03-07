@@ -1,3 +1,10 @@
+import {
+  addLike,
+  delCard,
+  delLike,
+} from "../scripts/api.js";
+import { config } from "../scripts/config.js";
+
 function createCard(
   { name, link, likes, owner },
   likeHandler,
@@ -15,12 +22,8 @@ function createCard(
   const cardImg = card.querySelector(".card__image");
   cardImg.src = link;
 
- 
-
   function isLike() {
-    const result = likes.find(
-      (like) => like._id ===  userId
-    );
+    const result = likes.find((like) => like._id === userId);
 
     if (result) {
       return true;
@@ -58,9 +61,45 @@ function createCard(
   return card;
 }
 
+const delCardHandler = (idCreatedCard, cardElement) => {
+  delCard({
+    ...config,
+    baseUrl: config.baseUrl + `/cards/${idCreatedCard}`,
+  }).then((result) => cardElement.remove());
+};
+
+const delLikeHandler = (idCard, cardElement) => {
+  delLike({
+    ...config,
+    baseUrl: config.baseUrl + `/cards/likes/${idCard}`,
+  }).then((result) => {
+    cardElement.querySelector(".card__likes-counter").textContent =
+      result.likes.length;
+    cardElement
+      .querySelector(".card__like-button")
+      .classList.remove("card__like-button_is-active");
+    console.log("удалили лайк");
+  }).catch(error => console.error(error))
+}
+
+const addLikeHandler = (idCard, cardElement) => {
+  addLike({
+    ...config,
+    baseUrl: config.baseUrl + `/cards/likes/${idCard}`,
+  }).then((result) => {
+    cardElement.querySelector(".card__likes-counter").textContent =
+      result.likes.length;
+    cardElement
+      .querySelector(".card__like-button")
+      .classList.add("card__like-button_is-active");
+    console.log("добавили лайк");
+  })
+}
+
+
 // function removeCardHandler(event) {
 //   event.target.closest(".card").remove();
 // }
 
 // export {createCard, removeCardHandler, likeHandler};
-export { createCard };
+export { createCard, delCardHandler, delLikeHandler, addLikeHandler };

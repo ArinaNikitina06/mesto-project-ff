@@ -10,9 +10,13 @@
 // 2e6ea80b-30a6-4c71-bab6-c324b53f8521
 // cohort-mag-4
 
-import initialCards from "./cards.js";
 import "../pages/index.css";
-import { createCard } from "../components/card.js";
+import {
+  createCard,
+  delCardHandler,
+  delLikeHandler,
+  addLikeHandler,
+} from "../components/card.js";
 import { openPopUp, closePopUp, closePopupByEsc } from "../components/modal.js";
 import {
   configPopupEditForm,
@@ -22,7 +26,7 @@ import {
   clearValidation,
 } from "./validation.js";
 
-import{
+import {
   addLike,
   updateUserData,
   updateUserPlace,
@@ -32,9 +36,9 @@ import{
   delLike,
 } from "./api.js";
 
-import {config} from './config.js';
+import { config } from "./config.js";
 
-let userId = ''
+let userId = "";
 const placesList = document.querySelector(".places__list");
 const popupProfileOpenButton = document.querySelector(".profile__edit-button");
 const popupPlaceOpenButton = document.querySelector(".profile__add-button");
@@ -84,7 +88,7 @@ popupProfileOpenButton.addEventListener("click", () => {
 });
 
 popupPlaceOpenButton.addEventListener("click", () => {
-  clearValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
+  // clearValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
   enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
   openPopUp(popupNewPlace);
 });
@@ -92,18 +96,19 @@ popupPlaceOpenButton.addEventListener("click", () => {
 popupEditForm.addEventListener("submit", (e) => {
   e.preventDefault();
   e.target.querySelector(".popup__button").textContent = "Сохранение...";
-  updateUserData({...config, baseUrl: config.baseUrl + '/users/me'},
+  updateUserData(
+    { ...config, baseUrl: config.baseUrl + "/users/me" },
     {
       name: popupEditProfileTitleInput.value,
       about: popupEditProfileDescriptionInput.value,
     }
-  ).then(res => {
+  ).then((res) => {
     profileTitle.textContent = popupEditProfileTitleInput.value;
     profileDescription.textContent = popupEditProfileDescriptionInput.value;
     closePopUp(popupEdit);
-    
+
     e.target.reset();
-  })
+  });
 });
 
 popupNewPlaceForm.addEventListener("submit", (e) => {
@@ -113,7 +118,8 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
 
   e.target.querySelector(".popup__button").textContent = "Сохранение...";
 
-  updateUserPlace({...config, baseUrl: config.baseUrl + '/cards'},
+  updateUserPlace(
+    { ...config, baseUrl: config.baseUrl + "/cards" },
     { name: name, link: link }
   ).then((res) => {
     const idCreatedCard = res._id;
@@ -122,37 +128,14 @@ popupNewPlaceForm.addEventListener("submit", (e) => {
     const cardElement = createCard(
       { name, link, likes: [], owner },
       // likeHandler
-      async (event) => {
+      (event) => {
         if (event.target.classList.contains("card__like-button_is-active")) {
-          const result = await delLike({
-            ...config,
-            baseUrl: config.baseUrl + `/cards/likes/${idCreatedCard}`,
-          });
-          cardElement.querySelector(".card__likes-counter").textContent =
-            result.likes.length;
-          cardElement
-            .querySelector(".card__like-button")
-            .classList.remove("card__like-button_is-active");
-          console.log("удалили лайк");
+          delLikeHandler(idCreatedCard, cardElement);
         } else {
-          const result = await addLike({
-            ...config,
-            baseUrl: config.baseUrl + `/cards/likes/${idCreatedCard}`,
-          });
-          cardElement.querySelector(".card__likes-counter").textContent =
-            result.likes.length;
-          cardElement
-            .querySelector(".card__like-button")
-            .classList.add("card__like-button_is-active");
-          console.log("добавили лайк");
+          addLikeHandler(idCreatedCard, cardElement);
         }
       },
-      () => {
-        delCard({
-          ...config,
-          baseUrl: config.baseUrl + `/cards/${idCreatedCard}`,
-        }).then((result) => cardElement.remove());
-      },
+      () => delCardHandler(idCreatedCard, cardElement),
       openCardHandler,
       userId
     );
@@ -209,32 +192,15 @@ function createCards(initialCards) {
   initialCards.forEach((element) => {
     const cardElement = createCard(
       element,
-   
-      async (event) => {
+
+      (event) => {
         if (event.target.classList.contains("card__like-button_is-active")) {
-          const result = await delLike({...config, baseUrl: config.baseUrl + `/cards/likes/${element._id}`});
-          cardElement.querySelector(".card__likes-counter").textContent =
-            result.likes.length;
-          cardElement
-            .querySelector(".card__like-button")
-            .classList.remove("card__like-button_is-active");
-          console.log("удалили лайк");
+          delLikeHandler(element._id, cardElement);
         } else {
-          const result = await addLike({...config, baseUrl: config.baseUrl + `/cards/likes/${element._id}`});
-          cardElement.querySelector(".card__likes-counter").textContent =
-            result.likes.length;
-          cardElement
-            .querySelector(".card__like-button")
-            .classList.add("card__like-button_is-active");
-          console.log("добавили лайк");
+          addLikeHandler(element._id, cardElement);
         }
       },
-
-    
-      () => {
-        delCard({...config, baseUrl: config.baseUrl + `/cards/${element._id}`}
-          ).then((result) => cardElement.remove());
-      },
+      () => delCardHandler(element._id, cardElement),
       openCardHandler,
       userId
     );
@@ -249,13 +215,19 @@ function openCardHandler(src, title) {
   openPopUp(popupImage);
 }
 
-const cardsPromise = getCards({...config, baseUrl: config.baseUrl + `/cards`});
+const cardsPromise = getCards({
+  ...config,
+  baseUrl: config.baseUrl + `/cards`,
+});
 
-const userDataPromise = getUserData( {...config, baseUrl: config.baseUrl + `/users/me`});
+const userDataPromise = getUserData({
+  ...config,
+  baseUrl: config.baseUrl + `/users/me`,
+});
 
 Promise.all([cardsPromise, userDataPromise]).then((data) => {
   const [initialCards, userData] = data;
-  userId = userData._id
+  userId = userData._id;
   // console.log(data);
   // console.log('user data', userData);
   createCards(initialCards);
