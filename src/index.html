@@ -20,9 +20,7 @@
       </header>
       <main class="content">
         <section class="profile page__section">
-          <div
-            class="profile__image"
-          ></div>
+          <div class="profile__image"></div>
           <div class="profile__info">
             <h1 class="profile__title">Жак-Ив Кусто</h1>
             <button class="profile__edit-button" type="button"></button>
@@ -41,23 +39,33 @@
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Редактировать профиль</h3>
-          <form class="popup__form" name="edit-profile">
+          <form class="popup__form" name="edit-profile" novalidate>
             <input
               type="text"
               name="name"
               class="popup__input popup__input_type_name"
               placeholder="Имя"
+              minlength="2"
+              maxlength="40"
               required
             />
-            <span class="popup__input-error" data-name="form-input-error-name"></span>
+            <span
+              class="popup__input-error"
+              data-name="form-input-error-name"
+            ></span>
             <input
               type="text"
               name="description"
               class="popup__input popup__input_type_description"
               placeholder="Занятие"
+              minlength="2"
+              maxlength="200"
               required
             />
-            <span class="popup__input-error" data-name="form-input-error-description"></span>
+            <span
+              class="popup__input-error"
+              data-name="form-input-error-description"
+            ></span>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
@@ -68,15 +76,20 @@
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Новое место</h3>
-          <form class="popup__form" name="new-place">
+          <form class="popup__form" name="new-place" novalidate>
             <input
               type="text"
               name="place-name"
               class="popup__input popup__input_type_card-name"
               placeholder="Название"
+              minlength="2"
+              maxlength="30"
               required
             />
-            <span class="popup__input-error" data-name="form-input-error-place-name"></span>
+            <span
+              class="popup__input-error"
+              data-name="form-input-error-place-name"
+            ></span>
             <input
               type="url"
               name="link"
@@ -84,14 +97,17 @@
               placeholder="Ссылка на картинку"
               required
             />
-            <span class="popup__input-error" data-name="form-input-error-link"></span>
+            <span
+              class="popup__input-error"
+              data-name="form-input-error-link"
+            ></span>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
           </form>
         </div>
       </div>
-      
+
       <div class="popup popup_type_image">
         <div class="popup__content popup__content_content_image">
           <button type="button" class="popup__close"></button>
@@ -101,26 +117,26 @@
       </div>
     </div>
 
-       <div class="popup popup_edit-avatar">
-        <div class="popup__content">
-          <button type="button" class="popup__close"></button>
-          <h3 class="popup__title">Обновить авaтар</h3>
-          <form class="popup__form" name="new-avatar">
-            <input
-              type="text"
-              name="new-avatar"
-              class="popup__input popup__input_type-new-avatar"
-              placeholder="avatar"
-              required
-            />
-            <span class="popup__input-error" data-name="form-input-error-new-avatar"></span>
-            <button type="submit" class="button popup__button">
-              Сохранить
-            </button>
-          </form>
-        </div>
+    <div class="popup popup_edit-avatar">
+      <div class="popup__content">
+        <button type="button" class="popup__close"></button>
+        <h3 class="popup__title">Обновить авaтар</h3>
+        <form class="popup__form" name="new-avatar" novalidate>
+          <input
+            type="text"
+            name="new-avatar"
+            class="popup__input popup__input_type-new-avatar"
+            placeholder="avatar"
+            required
+          />
+          <span
+            class="popup__input-error"
+            data-name="form-input-error-new-avatar"
+          ></span>
+          <button type="submit" class="button popup__button">Сохранить</button>
+        </form>
       </div>
-
+    </div>
 
     <template id="card-template">
       <li class="places__item card">
@@ -128,14 +144,12 @@
         <button type="button" class="card__delete-button"></button>
         <div class="card__description">
           <h2 class="card__title"></h2>
-          <div class='card__like-button-wrapper'>
+          <div class="card__like-button-wrapper">
             <button type="button" class="card__like-button"></button>
             <span class="card__likes-counter">0</span>
           </div>
         </div>
       </li>
     </template>
-
-  
   </body>
 </html>

@@ -18,14 +18,8 @@ import {
   addLikeHandler,
 } from "../components/card.js";
 import { openPopUp, closePopUp, closePopupByEsc } from "../components/modal.js";
-import {
-  configPopupEditForm,
-  configPopupCreateNewPlaceForm,
-  configPopupEditAvatarForm,
-  enableValidation,
-  clearValidation,
-} from "./validation.js";
 
+import { validator, clearValidation } from "./validation.js";
 import {
   updateUserData,
   updateUserPlace,
@@ -34,6 +28,12 @@ import {
 } from "../components/api.js";
 
 import { config } from "./config.js";
+
+const formConfig = {
+  input: ".popup__input",
+  spanError: ".popup__input-error",
+  button: ".popup__button",
+};
 
 let userId = "";
 const placesList = document.querySelector(".places__list");
@@ -72,21 +72,17 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
 
-// enableValidation(popupEditForm, configPopupEditForm);
-// enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
-// enableValidation(popupEditAvatarForm, configPopupEditAvatarForm);
 
 popupProfileOpenButton.addEventListener("click", () => {
   popupEditProfileTitleInput.value = profileTitle.textContent;
   popupEditProfileDescriptionInput.value = profileDescription.textContent;
-  clearValidation(popupEditForm, configPopupEditForm);
-  enableValidation(popupEditForm, configPopupEditForm);
+  clearValidation(popupEditForm, formConfig);
+  validator(popupEditForm, formConfig);
   openPopUp(popupEdit);
 });
 
 popupPlaceOpenButton.addEventListener("click", () => {
-  // clearValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
-  enableValidation(popupNewPlaceForm, configPopupCreateNewPlaceForm);
+  validator(popupNewPlaceForm, formConfig);
   openPopUp(popupNewPlace);
 });
 
@@ -164,8 +160,8 @@ popupList.forEach((popup) => {
 });
 
 profileAvatar.addEventListener("click", () => {
-  clearValidation(popupEditAvatarForm, configPopupEditAvatarForm);
-  enableValidation(popupEditAvatarForm, configPopupEditAvatarForm);
+     clearValidation(popupEditAvatarForm, formConfig);
+     validator(popupEditAvatarForm, formConfig);
   openPopUp(popupNewAvatar);
 });
 
@@ -244,3 +240,9 @@ Promise.all([cardsPromise, userDataPromise])
   .catch((error) => {
     console.warn(error);
   });
+
+function enableValidation(config) {
+  const forms = document.querySelectorAll('.popup__form')
+  forms.forEach((form) => validator(form, config))
+}
+enableValidation()
