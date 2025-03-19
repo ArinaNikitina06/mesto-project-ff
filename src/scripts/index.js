@@ -19,7 +19,7 @@ import {
 } from "../components/card.js";
 import { openPopUp, closePopUp, closePopupByEsc } from "../components/modal.js";
 
-import { validator, clearValidation } from "./validation.js";
+import {clearValidation, enableValidation } from "./validation.js";
 import {
   updateUserData,
   updateUserPlace,
@@ -31,8 +31,11 @@ import { config } from "./config.js";
 
 const formConfig = {
   input: ".popup__input",
+  inputErrorActive: "popup__input_type-error",
   spanError: ".popup__input-error",
+  spanErrorActive: "popup__input-error_active",
   button: ".popup__button",
+  form: ".popup__form",
 };
 
 let userId = "";
@@ -72,17 +75,16 @@ const popupCreateNewCardDescriptionInput = document.querySelector(
 const popupOpenImageUrl = document.querySelector(".popup__image");
 const popupOpenImageDescription = document.querySelector(".popup__caption");
 
+enableValidation(formConfig);
 
 popupProfileOpenButton.addEventListener("click", () => {
   popupEditProfileTitleInput.value = profileTitle.textContent;
   popupEditProfileDescriptionInput.value = profileDescription.textContent;
   clearValidation(popupEditForm, formConfig);
-  validator(popupEditForm, formConfig);
   openPopUp(popupEdit);
 });
 
 popupPlaceOpenButton.addEventListener("click", () => {
-  validator(popupNewPlaceForm, formConfig);
   openPopUp(popupNewPlace);
 });
 
@@ -161,7 +163,6 @@ popupList.forEach((popup) => {
 
 profileAvatar.addEventListener("click", () => {
      clearValidation(popupEditAvatarForm, formConfig);
-     validator(popupEditAvatarForm, formConfig);
   openPopUp(popupNewAvatar);
 });
 
@@ -232,8 +233,6 @@ Promise.all([cardsPromise, userDataPromise])
   .then((data) => {
     const [initialCards, userData] = data;
     userId = userData._id;
-    // console.log(data);
-    // console.log('user data', userData);
     createCards(initialCards);
     renderProfile(userData);
   })
@@ -241,8 +240,3 @@ Promise.all([cardsPromise, userDataPromise])
     console.warn(error);
   });
 
-function enableValidation(config) {
-  const forms = document.querySelectorAll('.popup__form')
-  forms.forEach((form) => validator(form, config))
-}
-enableValidation()
